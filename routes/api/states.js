@@ -1,8 +1,10 @@
 const express = require("express")
+const verifyStates = require("../../middleware/verifyStates")
 const router = express.Router()
 const stateController = require("../../controllers/statesController")
 
 router.route("/").get(stateController.getAllStates)
+router.use(verifyStates)
 router.route("/:state").get(stateController.getState)
 router.route("/:state/capital").get(stateController.getCapital)
 router.route("/:state/nickname").get(stateController.getNickname)
