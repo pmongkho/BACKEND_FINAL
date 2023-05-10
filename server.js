@@ -8,12 +8,13 @@ const connectDB = require("./config/dbConn")
 const verifyStates = require("./middleware/verifyStates")
 const PORT = process.env.PORT || 8000
 
-var unless = function (path, middleware) {
+var thisOne = function (path, middleware) {
 	return function (req, res, next) {
-		if (path === req.path) {
-			return next()
-		} else {
+		if (path === req.path ) {
+			
 			return middleware(req, res, next)
+		} else {
+			return next()
 		}
 	}
 }
@@ -27,7 +28,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 // middleware
-app.use(unless('/states',verifyStates))
+app.use(thisOne('/states/:state',verifyStates))
 
 // routes
 app.use("/", require("./routes/root"))
@@ -39,7 +40,7 @@ app.use("/states", require("./routes/api/states"))
 app.all("*", (req, res) => {
 	res.status(404)
 	if (req.accepts("html")) {
-		res.sendFile(path.join(__dirname, "views", "404.html"))
+		res.sendFile(path.join(__dirname, "views/404.html"))
 	} else if (req.accepts("json")) {
 		res.json({ error: "404 Not Found" })
 	} else {
